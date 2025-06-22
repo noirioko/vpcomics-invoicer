@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>VPComics Invoice Portal</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+        .header::before {
+            content: '🎨';
+            font-size: 3em;
+            position: absolute;
+            top: 20px;
+            left: 30px;
+            opacity: 0.3;
+        }
+        .header::after {
+            content: '📄';
+            font-size: 3em;
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            opacity: 0.3;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .login-section {
+            padding: 40px;
+            text-align: center;
+        }
+        .password-input {
+            width: 300px;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            margin: 20px 10px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .password-input:focus {
+            border-color: #4a90e2;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.3);
+        }
+        .login-btn {
+            background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.4);
+        }
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(74, 144, 226, 0.6);
+        }
+        .invoice-list {
+            padding: 40px;
+            display: none;
+        }
+        .invoice-item {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .invoice-item:hover {
+            background: #e3f2fd;
+            border-color: #4a90e2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .invoice-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #4a90e2;
+            margin-bottom: 10px;
+        }
+        .invoice-details {
+            color: #666;
+            margin: 5px 0;
+        }
+        .invoice-amount {
+            float: right;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #28a745;
+        }
+        .error-message {
+            color: #dc3545;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
+        .add-invoice-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 20px 10px;
+            transition: all 0.3s ease;
+        }
+        .add-invoice-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+        }
+        .logout-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            font-size: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            float: right;
+            margin-top: -10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>VPCOMICS</h1>
+            <p>Invoice Management Portal</p>
+        </div>
+
+        <!-- Login Section -->
+        <div class="login-section" id="loginSection">
+            <h2>🔐 Secure Access Required</h2>
+            <p>Enter password to access invoice management system</p>
+            <input type="password" class="password-input" id="passwordInput" placeholder="Enter password..." onkeypress="handleKeyPress(event)">
+            <br>
+            <button class="login-btn" onclick="checkPassword()">Access Portal</button>
+            <div class="error-message" id="errorMessage"></div>
+        </div>
+
+        <!-- Invoice List Section -->
+        <div class="invoice-list" id="invoiceList">
+            <button class="logout-btn" onclick="logout()">Logout</button>
+            <h2>📋 Invoice Management</h2>
+            <button class="add-invoice-btn" onclick="addNewInvoice()">+ Add New Invoice</button>
+            
+            <!-- Sample Invoices -->
+            <div class="invoice-item" onclick="openInvoice('PESA21_Invoice_VP-2025-P21-001.html')">
+                <div class="invoice-title">VP-2025-P21-001</div>
+                <div class="invoice-details">Customer: polvooo (syeeeee124)</div>
+                <div class="invoice-details">Date: June 19, 2025</div>
+                <div class="invoice-details">Event: Group order china</div>
+                <div class="invoice-amount">$488.10</div>
+                <div style="clear: both;"></div>
+            </div>
+
+            <!-- Add more invoices here as needed -->
+            <div class="invoice-item" onclick="addNewInvoice()">
+                <div class="invoice-title">+ Create New Invoice</div>
+                <div class="invoice-details">Click to add a new customer invoice</div>
+                <div style="clear: both;"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>VPComics Invoice Portal</strong> | Secure invoice management system</p>
+            <p>📧 limseraart@gmail.com | 📱 @vpcomics_shop</p>
+        </div>
+    </div>
+
+    <script>
+        // Set your password here! Change this to whatever you want
+        const ADMIN_PASSWORD = "vpcomics2025";
+
+        function checkPassword() {
+            const input = document.getElementById('passwordInput');
+            const errorMsg = document.getElementById('errorMessage');
+            
+            if (input.value === ADMIN_PASSWORD) {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('invoiceList').style.display = 'block';
+                errorMsg.textContent = '';
+                
+                // Save login state (optional)
+                sessionStorage.setItem('vpcomics_logged_in', 'true');
+            } else {
+                errorMsg.textContent = '❌ Incorrect password. Please try again.';
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                checkPassword();
+            }
+        }
+
+        function logout() {
+            document.getElementById('loginSection').style.display = 'block';
+            document.getElementById('invoiceList').style.display = 'none';
+            document.getElementById('passwordInput').value = '';
+            sessionStorage.removeItem('vpcomics_logged_in');
+        }
+
+        function openInvoice(filename) {
+            // Open invoice in new tab
+            window.open(filename, '_blank');
+        }
+
+        function addNewInvoice() {
+            alert('📝 To add a new invoice:\n\n1. Create a new HTML file based on your template\n2. Upload it to your hosting\n3. Add it to this list by editing the index.html file\n\nWould you like me to help you create a new invoice template?');
+        }
+
+        // Check if user was already logged in (optional)
+        window.onload = function() {
+            if (sessionStorage.getItem('vpcomics_logged_in') === 'true') {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('invoiceList').style.display = 'block';
+            }
+        };
+    </script>
+</body>
+</html>
